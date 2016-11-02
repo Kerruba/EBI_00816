@@ -2,7 +2,7 @@
 This is my attept to solve the problem you requested. 
 
 ## 1. Create the matrix
-Running the `main.py` let you produce the matrix plus a table with the authors and the corresponind coauthors identified by id
+Running the `main.py` let you produce the matrix plus a table with the authors and the corresponding coauthors identified by id
 
 ## 2. How would design the test suite:
 - I would create some example documents, using as a blueprint the XML schema provided, to test some simple functionalities
