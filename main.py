@@ -1,4 +1,6 @@
 from lxml import etree
+import json
+
 tree = etree.parse('content.xml')
 root = tree.getroot()
 
@@ -11,7 +13,9 @@ def init_matrix(size):
 def prepare_authors_structure():
 	names = root.xpath("//Author/*[self::LastName or self::ForeName]/text()")
 	zip_authors = set(zip(names[0::2], names[1::2]))
-	authors_list = [{"id": i, "forename": y, "lastname": x, "coauth": {} } for i, (x, y) in enumerate(zip_authors)]
+	authors_list = [{"id": i, "forename": y, "lastname": x, "coauth": {}} for i, (x, y) in enumerate(zip_authors)]
+	for auth in authors_list:
+		auth["fullname"] = "{},{}".format("".join(auth["forename"].split()),"".join(auth["lastname"].split()))
 	return authors_list
 
 
@@ -20,6 +24,16 @@ def add_contribution(auth,coauth_id):
 		auth["coauth"][coauth_id] += 1
 	else:
 		auth["coauth"][coauth_id] = 1
+
+def print_matrix():
+	print("\t", end="")
+	for auth in authors[:-1:]:
+		print("{}\t".format(auth["fullname"]),end="")
+	print(authors[-1]["fullname"])
+	for auth in authors:
+		print("{}\t".format(auth["fullname"]), end="")
+		print("{}\t".format(matrix[auth["id"]]))
+
 
 
 if __name__ == "__main__":
@@ -38,8 +52,7 @@ if __name__ == "__main__":
 				add_contribution(auth, coauth_ref["id"])
 				matrix[auth_id][coauth_ref["id"]] += 1
 
-	print(matrix)
-	print(authors)
-
-
+print_matrix()
+print("\nAuthors structure:")
+print(json.dumps(authors, indent=1))
 
